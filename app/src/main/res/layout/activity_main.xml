@@ -97,7 +97,16 @@
                 android:layout_marginLeft="@dimen/dp51"/>
         </LinearLayout>
 
-
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/mPieChart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp200"
+            android:layout_gravity="center_horizontal"/>
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/mLineChart"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_below="@+id/tv_lcdb"/>
 
     </LinearLayout>
 
@@ -108,7 +117,8 @@
         android:orientation="vertical"
         android:background="@color/color_2e3447"
         android:layout_toRightOf="@+id/tlayout"
-        android:layout_marginTop="@dimen/dp22">
+        android:layout_marginTop="@dimen/dp22"
+        android:layout_marginLeft="50dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
