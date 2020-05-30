@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/color_1c2134">
+    <LinearLayout
+        android:id="@+id/tlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/layout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dp10">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="按日统计"
+                    android:textSize="@dimen/dp18"
+                    android:textColor="@color/white" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/b_bg_10"
+                    android:layout_marginLeft="@dimen/dp8"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dp10"
+                android:layout_marginLeft="@dimen/dp40">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="按日统计"
+                    android:textSize="@dimen/dp18"
+                    android:textColor="@color/white" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/b_bg_10"
+                    android:layout_marginLeft="@dimen/dp8"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp30">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="当日收入"
+                android:textSize="@dimen/dp20"
+                android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/todayMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1350元"
+                android:textSize="@dimen/dp20"
+                android:textColor="@color/white"
+                android:layout_marginLeft="@dimen/dp51"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp10">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="当日订单"
+                android:textSize="@dimen/dp20"
+                android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/todayOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="60单"
+                android:textSize="@dimen/dp20"
+                android:textColor="@color/white"
+                android:layout_marginLeft="@dimen/dp51"/>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ulayout"
+        android:layout_width="@dimen/dp240"
+        android:layout_height="@dimen/dp280"
+        android:orientation="vertical"
+        android:background="@color/color_2e3447"
+        android:layout_toRightOf="@+id/tlayout"
+        android:layout_marginTop="@dimen/dp22">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户消费排行榜"
+            android:textSize="@dimen/dp20"
+            android:textColor="@color/white"
+            android:padding="@dimen/dp10"
+            android:layout_gravity="center_horizontal"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/uRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:layout_marginTop="@dimen/dp10"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/clayout"
+        android:layout_width="305dp"
+        android:layout_height="473dp"
+        android:orientation="vertical"
+        android:background="@color/color_2e3447"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp21"
+        android:layout_marginTop="@dimen/dp22">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="菜品销量排行榜"
+            android:textSize="@dimen/dp20"
+            android:textColor="@color/white"
+            android:padding="@dimen/dp10"
+            android:layout_gravity="center_horizontal"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:layout_marginTop="@dimen/dp10"/>
+    </LinearLayout>
+
+
+
+
+
+</RelativeLayout>
