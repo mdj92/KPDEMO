@@ -190,6 +190,12 @@ public class SpUtil {
         return sdf.format(new Date());
     }
 
+    //获取时间
+    public static String getTime(Date date,String style){
+        SimpleDateFormat format = new SimpleDateFormat(style);
+        return format.format(date);
+    }
+
     /**
      * 获取未来 第 past 天的日期
      *

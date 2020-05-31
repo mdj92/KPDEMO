@@ -43,5 +43,7 @@ dependencies {
 
     //折线范围图
 //    implementation 'com.github.huangyanbin:SmartChart:1.4.1'
+    //时间选择器
+    implementation 'com.contrarywind:Android-PickerView:4.1.6'
 
 }

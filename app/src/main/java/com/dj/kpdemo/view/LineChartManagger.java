@@ -29,6 +29,8 @@ public class LineChartManagger {
     private List<Entry>entries;
     private List<Integer>chartColor;
     private List<String>fxlist;
+    private LineDataSet lineDataSet;
+    private LineData lineData;
 
     public LineChartManagger(LineChart lineChart, List<Entry>entries, List<String>lables
             , Context context , List<Integer>chartColor, List<String>fxlist) {
@@ -98,34 +100,90 @@ public class LineChartManagger {
 //                return  String.valueOf(value) ;
 //            }
 //        });
-        //设置每个tab的显示位置 获取图例
-        Legend l = mLineChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(true);
-        l.setXEntrySpace(0f); //x轴的间距
-        l.setYEntrySpace(0f);//y轴的间距
-        l.setYOffset(0f);//图例的y偏移量
-        l.setTextColor(Color.WHITE);
+
         setData();
+    }
+
+    /**
+     * 是否显示lab
+     * @param b
+     */
+    public void setLegend(boolean b){
+        if (b){
+            //设置每个tab的显示位置 获取图例
+            Legend l = mLineChart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setXEntrySpace(0f); //x轴的间距
+            l.setYEntrySpace(0f);//y轴的间距
+            l.setYOffset(0f);//图例的y偏移量
+            l.setTextColor(Color.WHITE);
+        }
+
     }
 
     public void setData(){
         xAxis.setValueFormatter(new IndexAxisValueFormatter(fxlist));
-        LineDataSet lineDataSet = new LineDataSet(entries, "出勤走势");
-        ContextCompat.getColor(mContext, R.color.color_35E6FD);
-        lineDataSet.setColor(ContextCompat.getColor(mContext,R.color.color_35E6FD));//线条颜色
-        lineDataSet.setCircleColor(ContextCompat.getColor(mContext,R.color.color_35E6FD));//圆点颜色
-        lineDataSet.setLineWidth(1f);//线条宽度
-        lineDataSet.setCircleRadius(2);
-        lineDataSet.setDrawFilled(true); //设置阴影部分
+        lineDataSet = new LineDataSet(entries, "");
+        lineDataSet.setColor(ContextCompat.getColor(mContext,R.color.color_abaaaa));//线条颜色
+        lineDataSet.setCircleColor(ContextCompat.getColor(mContext,R.color.color_abaaaa));//圆点颜色
+        lineDataSet.setLineWidth(1.5f);//线条宽度
+        lineDataSet.setCircleRadius(3f);
+        lineDataSet.setDrawFilled(false); //设置阴影部分
 
-        LineData lineData = new LineData(lineDataSet);
-        //是否绘制线条上的文字
-        lineData.setDrawValues(false);
+//        lineData = new LineData(lineDataSet);
+//        //是否绘制线条上的文字
+//        lineData.setDrawValues(false);
+//        mLineChart.setData(lineData);
+//        mLineChart.invalidate(); // refresh
+        setDrawValues(false);
+    }
+
+    //刷新
+    public void invalidate(){
+        mLineChart.invalidate(); // refresh
+    }
+
+    /**
+     * 是否绘制线条上的文字
+     * @param
+     */
+    public void setDrawValues(boolean b) {
+        if (lineData == null) {
+            lineData = new LineData(lineDataSet);
+        }
+        lineData.setDrawValues(b);
         mLineChart.setData(lineData);
         mLineChart.invalidate(); // refresh
+    }
+
+    /**
+     * 设置是否显示Y阴影部分
+     * @param
+     */
+    public void setCircleColorAndRacdius(int c ,float radius) {
+        lineDataSet.setCircleColor(c);
+        lineDataSet.setCircleRadius(radius);
+    }
+
+    /**
+     *
+     * @param b Y折线条宽度
+     * @param c 线条颜色
+     */
+    public void setLineWidthAndColor(float b,int c) {
+        lineDataSet.setLineWidth(b);
+        lineDataSet.setColor(c);//
+    }
+
+    /**
+     * 设置是否显示Y阴影部分
+     * @param
+     */
+    public void setDrawFilled(boolean b) {
+        lineDataSet.setDrawFilled(b);
     }
 
     /**

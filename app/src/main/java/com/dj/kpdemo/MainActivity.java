@@ -1,9 +1,20 @@
 package com.dj.kpdemo;
 
+import android.animation.ObjectAnimator;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -11,13 +22,20 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnDismissListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.view.TimePickerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dj.kpdemo.base.BaseActivity;
 import com.dj.kpdemo.bean.SalesCPBean;
+import com.dj.kpdemo.bean.TimeBean;
 import com.dj.kpdemo.bean.UserCostBean;
 import com.dj.kpdemo.view.LineChartManagger;
 import com.dj.kpdemo.view.PieChartEntity;
+import com.dj.kpdemo.view.RecyclerViewDivider;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
@@ -26,10 +44,14 @@ import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static com.dj.kpdemo.util.SpUtil.getTime;
 
 public class MainActivity extends BaseActivity {
 
@@ -40,14 +62,14 @@ public class MainActivity extends BaseActivity {
     LinearLayout layout2;
     @BindView(R.id.todayMoney)
     TextView todayMoney;
+    @BindView(R.id.dTimeTV)
+    TextView dTimeTV;
     @BindView(R.id.todayOrder)
     TextView todayOrder;
     @BindView(R.id.tlayout)
     LinearLayout tlayout;
     @BindView(R.id.uRecyclerView)
     RecyclerView uRecyclerView;
-    List<UserCostBean> uData = new ArrayList<>();
-    List<SalesCPBean> cData = new ArrayList<>();
     @BindView(R.id.ulayout)
     LinearLayout ulayout;
     @BindView(R.id.cRecyclerView)
@@ -58,10 +80,22 @@ public class MainActivity extends BaseActivity {
     PieChart mPieChart;
     @BindView(R.id.mLineChart)
     LineChart mLineChart;
+    @BindView(R.id.imgDate)
+    ImageView imgDate;
+    @BindView(R.id.imgType)
+    ImageView imgType;
+    @BindView(R.id.imgNear)
+    ImageView imgNear;
+
+    List<UserCostBean> uData = new ArrayList<>();
+    List<SalesCPBean> cData = new ArrayList<>();
+    private TimePickerView pvTime;
 
     private UserCostAdapter userCostAdapter;
 
     private SalesAdapter salesAdapter;
+    private String dateTime="";
+    private int tType=0;
 
     @Override
     public int bindLayout() {
@@ -79,6 +113,29 @@ public class MainActivity extends BaseActivity {
         cRecyclerView.setAdapter(salesAdapter);
 
         setPieChart(getPieData());
+        setLineChartData();
+    }
+
+    @OnClick({R.id.layout1,R.id.layout2,R.id.layout3})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.layout1:
+                tType=1;
+                startAnim(imgType,true);
+                showTimePicker();
+                break;
+            case R.id.layout2:
+                tType=0;
+                startAnim(imgDate,true);
+                showTimePicker();
+                break;
+            case R.id.layout3:
+//                tType=2;
+//                startAnim(imgNear,true);
+//                showTimePicker();
+
+                break;
+        }
     }
 
     @Override
@@ -101,7 +158,7 @@ public class MainActivity extends BaseActivity {
             pieChartEntity.setPercentValues(true);
             pieChartEntity.setDrawEntryLabels(false);
 //            pieChartEntity.setDrawValues(true);
-            pieChartEntity.setHoleEnabled(getResources().getColor(R.color.color_142769), 50f, 110, 10f);
+            pieChartEntity.setHoleEnabled(getResources().getColor(R.color.color_1c2134), 50f, 110, 10f);
         }
     }
 
@@ -124,18 +181,21 @@ public class MainActivity extends BaseActivity {
         return pData;
     }
 
-//    private void setLineChartData(InMBean inMBean) {
-//        if (inMBean.getMon() ==null) return;
-//        List<String> mlist = inMBean.getMon();
-//        ArrayList<Entry> entries = new ArrayList<>();
-//        for (int i = 0; i < inMBean.getMon().size(); i++) {
-//            float x = (float) (i);
-//            float y = (float) (inMBean.getCql().get(i));
-//            entries.add(new Entry(i, y));
-//        }
-//        LineChartManagger lineChartManagger = new LineChartManagger(mLineChart, entries, getActivity(), mlist);
-//        lineChartManagger.setXLabelRotationAngle(-80f);
-//    }
+    private void setLineChartData() {
+
+        List<String> mlist = new ArrayList<>();
+
+        ArrayList<Entry> entries = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            float x = (float) (i);
+            float y = (float) (100 * i);
+            entries.add(new Entry(i, y));
+            mlist.add("02/"+(17 + i));
+        }
+        LineChartManagger lineChartManagger = new LineChartManagger(mLineChart, entries, this, mlist);
+        lineChartManagger.setXLabelRotationAngle(0);
+        lineChartManagger.setLegend(false);
+    }
 
 
     private List<UserCostBean> getCostData() {
@@ -158,12 +218,99 @@ public class MainActivity extends BaseActivity {
         return cData;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
+
+    private void showTimePicker() {
+        pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {
+                dateTime = getTime(date, "yyyy-MM-dd");
+                dTimeTV.setText(dateTime);
+//                initData();
+            }
+        })
+                .setTimeSelectChangeListener(new OnTimeSelectChangeListener() {
+                    @Override
+                    public void onTimeSelectChanged(Date date) {
+                        Log.i("pvTime", "onTimeSelectChanged");
+                    }
+                })
+                .setType(new boolean[]{false, true, true, false, false, false})
+                .setLabel("年", "月", "日", "时", "分", "秒")//默认设置为年月日时分秒
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .isDialog(false)
+                .build();
+
+        pvTime.show();
+        pvTime.setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(Object o) {
+                if (tType ==0){
+                    startAnim(imgDate,false);
+                }else if (tType ==1) {
+                    startAnim(imgType,false);
+                }else if (tType ==3) {
+                    startAnim(imgNear,false);
+                }
+            }
+        });
     }
+
+    private void startAnim(ImageView img, boolean click) {
+        if (click) {
+            ObjectAnimator.ofFloat(img, "rotation", 0f, 180f).setDuration(300).start();
+        } else {
+            ObjectAnimator.ofFloat(img, "rotation", 180f, 0f).setDuration(300).start();
+        }
+    }
+
+    private RecyclerView reaRecycler;
+    private PopupWindow popupWindow;
+    private ReasonAdapter rAdapter;
+    private void initDialog(List<TimeBean> list, final int type) {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_select, null);
+        reaRecycler = view.findViewById(R.id.recycler);
+        reaRecycler.setLayoutManager(new LinearLayoutManager(this));
+        rAdapter = new ReasonAdapter(list);
+        reaRecycler.setAdapter(rAdapter);
+        reaRecycler.addItemDecoration(new RecyclerViewDivider(this, RecyclerViewDivider.VERTICAL_LIST, R.drawable.shape_divider));
+        popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
+        popupWindow.setOutsideTouchable(true);
+        View parent = LayoutInflater.from(this).inflate(R.layout.activity_main, null);
+        popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+        final WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.alpha = 0.5f;
+        getWindow().setAttributes(params);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                params.alpha = 1.0f;
+                getWindow().setAttributes(params);
+            }
+        });
+        rAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+            }
+        });
+    }
+
+
+
+    private class ReasonAdapter extends BaseQuickAdapter<TimeBean, BaseViewHolder> {
+
+
+        public ReasonAdapter(@Nullable List<TimeBean> data) {
+            super(R.layout.item_bottomsheet, data);
+        }
+
+        @Override
+        protected void convert(BaseViewHolder helper, TimeBean item) {
+            helper.setText(R.id.title, item.getName());
+        }
+    }
+
 
     //用户消费排行
     private class UserCostAdapter extends BaseQuickAdapter<UserCostBean, BaseViewHolder> {
