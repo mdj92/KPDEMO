@@ -7,6 +7,7 @@
     tools:context=".MainActivity"
     android:background="@color/color_1c2134">
     <RelativeLayout
+        android:id="@+id/rlayout"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content">
@@ -50,7 +51,7 @@
                         android:id="@+id/dTimeTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2020-03-01"
+                        android:text=""
                         android:textSize="@dimen/dp18"
                         android:textColor="@color/white" />
                     <ImageView
@@ -58,7 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/p01_03"
-                        android:layout_marginLeft="@dimen/dp8"/>
+                        android:layout_marginLeft="@dimen/dp8" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -115,7 +116,7 @@
         <LinearLayout
             android:id="@+id/ulayout"
             android:layout_width="@dimen/dp240"
-            android:layout_height="@dimen/dp280"
+            android:layout_height="@dimen/dp300"
             android:orientation="vertical"
             android:background="@color/color_2e3447"
             android:layout_alignParentRight="true"
@@ -133,39 +134,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
-                android:overScrollMode="never"
-                android:layout_marginTop="@dimen/dp10"/>
+                android:overScrollMode="never" />
         </LinearLayout>
 
-
-        <LinearLayout
-            android:id="@+id/layout3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp10"
-            android:layout_below="@+id/tlayout"
-            android:layout_alignParentRight="true"
-            android:gravity="center_vertical">
-            <TextView
-                android:id="@+id/nearTimeTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2020-03-01"
-                android:textSize="@dimen/dp18"
-                android:textColor="@color/white" />
-            <ImageView
-                android:id="@+id/imgNear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/p01_03"
-                android:layout_marginLeft="@dimen/dp8"/>
-        </LinearLayout>
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/mLineChart"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_below="@+id/layout3"
+            android:layout_below="@+id/tlayout"
             android:layout_marginLeft="30dp"
             android:layout_marginBottom="30dp"/>
 
@@ -174,13 +151,15 @@
     <LinearLayout
         android:id="@+id/clayout"
         android:layout_width="305dp"
-        android:layout_height="473dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/color_2e3447"
         android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/dp80"
         android:layout_marginRight="@dimen/dp21"
         android:layout_marginTop="@dimen/dp22"
-        android:layout_marginLeft="@dimen/dp80">
+        android:layout_marginBottom="30dp"
+       >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -194,8 +173,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:overScrollMode="never"
-            android:layout_marginTop="@dimen/dp10"/>
+            android:overScrollMode="never" />
     </LinearLayout>
 
 

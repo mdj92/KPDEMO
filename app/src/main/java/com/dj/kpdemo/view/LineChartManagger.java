@@ -100,6 +100,7 @@ public class LineChartManagger {
 //                return  String.valueOf(value) ;
 //            }
 //        });
+        setLegend(false);
 
         setData();
     }
@@ -109,18 +110,19 @@ public class LineChartManagger {
      * @param b
      */
     public void setLegend(boolean b){
-        if (b){
+
             //设置每个tab的显示位置 获取图例
             Legend l = mLineChart.getLegend();
+            l.setForm(Legend.LegendForm.NONE);
             l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
             l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
             l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-            l.setDrawInside(false);
+            l.setDrawInside(b);
             l.setXEntrySpace(0f); //x轴的间距
             l.setYEntrySpace(0f);//y轴的间距
             l.setYOffset(0f);//图例的y偏移量
             l.setTextColor(Color.WHITE);
-        }
+
 
     }
 

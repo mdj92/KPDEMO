@@ -7,5 +7,5 @@
     android:gravity="center"
     android:padding="@dimen/dp12"
     android:text="不喜欢"
-    android:textColor="#0c1417"
+    android:textColor="@color/white"
     android:textSize="@dimen/dp15"/>

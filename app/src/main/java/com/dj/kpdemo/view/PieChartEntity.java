@@ -2,6 +2,8 @@ package com.dj.kpdemo.view;
 
 
 
+import android.graphics.Color;
+
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -72,7 +74,7 @@ public class PieChartEntity {
     private void initPieChart() {
         mChart.getDescription().setEnabled(false);//取消右下角描述
         //设置描述
-        mChart.setExtraOffsets(5, 5, 5, 5);//设置饼状图距离上下左右的偏移量
+        mChart.setExtraOffsets(10, 5, 10, 5);//设置饼状图距离上下左右的偏移量
         mChart.setDragDecelerationFrictionCoef(0.95f);//设置阻尼系数
         //图标的背景色
 //        mChart.setBackgroundColor(Color.TRANSPARENT);
@@ -92,16 +94,16 @@ public class PieChartEntity {
 
         //设置每个tab的显示位置 获取图例
         Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setXEntrySpace(0f); //x轴的间距
-        l.setYEntrySpace(1f);//y轴的间距
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(true);
+        l.setXEntrySpace(19f); //x轴的间距
+        l.setYEntrySpace(0f);//y轴的间距
         l.setYOffset(0f);//图例的y偏移量
-//        l.setXOffset(10f);  //图例x的偏移量
-//        l.setTextColor(Color.parseColor("#a1a1a1")); //图例文字的颜色
-//        l.setTextSize(13);  //图例文字的大小
+        l.setXOffset(10f);  //图例x的偏移量
+        l.setTextColor(Color.WHITE); //图例文字的颜色
+        l.setTextSize(11);  //图例文字的大小
 
         // entry label styling
         mChart.setDrawEntryLabels(true); //设置是否绘制Label
@@ -205,7 +207,7 @@ public class PieChartEntity {
      * @param transRadius 透明圆半径
      */
     public void setHoleEnabled (int holeColor, float holeRadius, int transColor ,float transRadius) {
-        mChart.setDrawHoleEnabled(true);
+        mChart.setDrawHoleEnabled(true); //是否启用空洞，默认为true
         mChart.setHoleColor(holeColor);
         mChart.setTransparentCircleColor(holeColor);//设置半透明圆圈的颜色
         mChart.setTransparentCircleAlpha(transColor);//设置半透明圆圈的透明度

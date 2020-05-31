@@ -27,6 +27,7 @@ import com.bigkoo.pickerview.listener.OnDismissListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.blankj.utilcode.util.TimeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dj.kpdemo.base.BaseActivity;
@@ -60,6 +61,8 @@ public class MainActivity extends BaseActivity {
     LinearLayout layout1;
     @BindView(R.id.layout2)
     LinearLayout layout2;
+    @BindView(R.id.tjTypeName)
+    TextView tjTypeName;
     @BindView(R.id.todayMoney)
     TextView todayMoney;
     @BindView(R.id.dTimeTV)
@@ -84,18 +87,17 @@ public class MainActivity extends BaseActivity {
     ImageView imgDate;
     @BindView(R.id.imgType)
     ImageView imgType;
-    @BindView(R.id.imgNear)
-    ImageView imgNear;
 
-    List<UserCostBean> uData = new ArrayList<>();
-    List<SalesCPBean> cData = new ArrayList<>();
     private TimePickerView pvTime;
 
-    private UserCostAdapter userCostAdapter;
+    private UserCostAdapter userCostAdapter; //用户消费
+    private SalesAdapter salesAdapter; //菜品消费
+    List<UserCostBean> uData = new ArrayList<>();
+    List<SalesCPBean> cData = new ArrayList<>();
 
-    private SalesAdapter salesAdapter;
-    private String dateTime="";
-    private int tType=0;
+    private String dateTime=""; //选择的日期
+    private int tType=0; //用于判断点击哪个三角
+    private int dateType =0; //选择时间 日 周 月 类型 -默认日
 
     @Override
     public int bindLayout() {
@@ -104,6 +106,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        dTimeTV.setText(spUtil.getDateString());
         uRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userCostAdapter = new UserCostAdapter(getCostData());
         uRecyclerView.setAdapter(userCostAdapter);
@@ -116,25 +119,23 @@ public class MainActivity extends BaseActivity {
         setLineChartData();
     }
 
-    @OnClick({R.id.layout1,R.id.layout2,R.id.layout3})
+    @OnClick({R.id.layout1,R.id.layout2})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.layout1:
                 tType=1;
                 startAnim(imgType,true);
-                showTimePicker();
+                initDialog(getTimeData(),1);
+//                showTimePicker();
                 break;
             case R.id.layout2:
                 tType=0;
                 startAnim(imgDate,true);
                 showTimePicker();
                 break;
-            case R.id.layout3:
-//                tType=2;
-//                startAnim(imgNear,true);
-//                showTimePicker();
 
-                break;
+//                initDialog(getTimeData(),1);
+//                break;
         }
     }
 
@@ -154,11 +155,11 @@ public class MainActivity extends BaseActivity {
         dataSet.setColors(colors);
         if (entries1.size() > 0) {
             PieChartEntity pieChartEntity = new PieChartEntity(mPieChart, entries1, new String[]{"", ""}, colors, 11f, Color.WHITE, PieDataSet.ValuePosition.OUTSIDE_SLICE, PieDataSet.ValuePosition.OUTSIDE_SLICE);
-            pieChartEntity.setLegendEnabled(false); //显示lab说明
-            pieChartEntity.setPercentValues(true);
-            pieChartEntity.setDrawEntryLabels(false);
+            pieChartEntity.setLegendEnabled(true); //显示lab说明
+            pieChartEntity.setPercentValues(true); //设置是否使用百分值
+            pieChartEntity.setDrawEntryLabels(false); //否绘制条目标签
 //            pieChartEntity.setDrawValues(true);
-            pieChartEntity.setHoleEnabled(getResources().getColor(R.color.color_1c2134), 50f, 110, 10f);
+            pieChartEntity.setHoleEnabled(getResources().getColor(R.color.color_1c2134), 50f, 0, 10f);
         }
     }
 
@@ -173,11 +174,28 @@ public class MainActivity extends BaseActivity {
 //        lineChartManagger.setXLabelRotationAngle(-80f);
     }
 
+    private List<TimeBean> getTimeData(){
+        List<TimeBean> timeBeanList =new ArrayList<>();
+
+        for (int i = 0; i < 3 ; i++) {
+            TimeBean bean =new TimeBean();
+            bean.setType(i);
+            if (i==0){
+                bean.setName("按日统计");
+            }else if (i==1){
+                bean.setName("按周统计");
+            }else if (i==2){
+                bean.setName("按月统计");
+            }
+            timeBeanList.add(bean);
+        }
+        return  timeBeanList;
+    }
 
     private ArrayList<PieEntry> getPieData() {
         ArrayList<PieEntry> pData = new ArrayList<>();
-        pData.add(new PieEntry(80, "移动支付"));
-        pData.add(new PieEntry(20, "现金支付"));
+        pData.add(new PieEntry(40, "支出"));
+        pData.add(new PieEntry(60, "收入"));
         return pData;
     }
 
@@ -194,7 +212,7 @@ public class MainActivity extends BaseActivity {
         }
         LineChartManagger lineChartManagger = new LineChartManagger(mLineChart, entries, this, mlist);
         lineChartManagger.setXLabelRotationAngle(0);
-        lineChartManagger.setLegend(false);
+//        lineChartManagger.setLegend(false);
     }
 
 
@@ -225,19 +243,22 @@ public class MainActivity extends BaseActivity {
             public void onTimeSelect(Date date, View v) {
                 dateTime = getTime(date, "yyyy-MM-dd");
                 dTimeTV.setText(dateTime);
+                //日 周 月
+                if (dateType == 0){
+
+                }else if (dateType == 1){
+                   showToast("当前是当月第"+ spUtil.getWeek(date)+ "周");
+                }else if (dateType == 2){
+                    showToast("当前月份："+ spUtil.getMonth(date));
+                }
 //                initData();
             }
         })
-                .setTimeSelectChangeListener(new OnTimeSelectChangeListener() {
-                    @Override
-                    public void onTimeSelectChanged(Date date) {
-                        Log.i("pvTime", "onTimeSelectChanged");
-                    }
-                })
-                .setType(new boolean[]{false, true, true, false, false, false})
+                .setType(new boolean[]{true, true, true, false, false, false})
                 .setLabel("年", "月", "日", "时", "分", "秒")//默认设置为年月日时分秒
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-                .isDialog(false)
+                .setBgColor(ContextCompat.getColor(this,R.color.color_1c2134))
+                .setBackgroundId(ContextCompat.getColor(this,R.color.color_1c2134))
+                .setTextColorCenter(ContextCompat.getColor(this,R.color.white))
                 .build();
 
         pvTime.show();
@@ -248,8 +269,6 @@ public class MainActivity extends BaseActivity {
                     startAnim(imgDate,false);
                 }else if (tType ==1) {
                     startAnim(imgType,false);
-                }else if (tType ==3) {
-                    startAnim(imgNear,false);
                 }
             }
         });
@@ -274,7 +293,7 @@ public class MainActivity extends BaseActivity {
         reaRecycler.setAdapter(rAdapter);
         reaRecycler.addItemDecoration(new RecyclerViewDivider(this, RecyclerViewDivider.VERTICAL_LIST, R.drawable.shape_divider));
         popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.color.color_1c2134));
         popupWindow.setOutsideTouchable(true);
         View parent = LayoutInflater.from(this).inflate(R.layout.activity_main, null);
         popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
@@ -284,6 +303,7 @@ public class MainActivity extends BaseActivity {
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
+                startAnim(imgType,false);
                 params.alpha = 1.0f;
                 getWindow().setAttributes(params);
             }
@@ -291,7 +311,10 @@ public class MainActivity extends BaseActivity {
         rAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+                TimeBean data = (TimeBean) adapter.getData().get(position);
+                tjTypeName.setText(data.getName());
+                dateType =data.getType();
+                popupWindow.dismiss();
             }
         });
     }

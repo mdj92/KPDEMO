@@ -7,7 +7,7 @@ package com.dj.kpdemo.bean;
  */
 public class TimeBean {
     private String time;
-    private String type;
+    private int type;
     private String name;
 
     public String getTime() {
@@ -18,11 +18,11 @@ public class TimeBean {
         this.time = time;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

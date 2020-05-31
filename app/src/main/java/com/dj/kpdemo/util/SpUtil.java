@@ -236,4 +236,22 @@ public class SpUtil {
         return formatDate;
     }
 
+    //当月第几周
+    public int getWeek(Date date){
+        Calendar calendar = Calendar.getInstance();
+        //设置星期一为一周开始的第一天 ,默认是周天为一周的第一天
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.setTime(date);
+        int week = calendar.get(Calendar.WEEK_OF_MONTH);
+        return week;
+    }
+
+    //获取当前日期是几月份
+    public int getMonth(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int month = calendar.get(Calendar.MONTH);
+        return month;
+    }
+
 }
