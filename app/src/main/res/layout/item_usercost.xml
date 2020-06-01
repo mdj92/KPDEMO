@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp10"
     android:paddingRight="@dimen/dp10"
-    android:paddingTop="@dimen/dp5"
-    android:paddingBottom="@dimen/dp5"
+    android:paddingTop="@dimen/dp8"
+    android:paddingBottom="@dimen/dp8"
     android:orientation="horizontal"
     android:background="@color/color_2e3447">
     <TextView
@@ -19,11 +19,12 @@
         android:textColor="@color/color_d13d27"
         android:layout_centerVertical="true"/>
 
-    <ImageView
+    <TextView
         android:id="@+id/img"
-        android:layout_width="@dimen/dp40"
-        android:layout_height="@dimen/dp40"
-        android:visibility="invisible"
+        android:layout_width="@dimen/dp30"
+        android:layout_height="@dimen/dp30"
+        android:visibility="visible"
+        android:background="@drawable/shape_oval"
         android:layout_toRightOf="@+id/position"
         android:layout_marginLeft="@dimen/dp10"
         android:layout_centerVertical="true"/>
@@ -33,8 +34,9 @@
         android:layout_height="wrap_content"
         android:text="张三"
         android:textColor="@color/white"
-        android:textSize="@dimen/dp20"
+        android:textSize="@dimen/dp18"
         android:layout_toRightOf="@+id/img"
+        android:layout_marginLeft="@dimen/dp10"
         android:layout_centerVertical="true"/>
 
     <TextView
@@ -43,7 +45,7 @@
         android:layout_height="wrap_content"
         android:text="100元"
         android:textColor="@color/white"
-        android:textSize="@dimen/dp20"
+        android:textSize="@dimen/dp18"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/dp10"/>

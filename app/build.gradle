@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+//    signingConfigs {
+//        config {
+//            keyAlias 'kpdemo'
+//            keyPassword '123456'
+//            storeFile file('kpdemo')
+//            storePassword 'k123456'
+//        }
+//    }
+
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
     defaultConfig {

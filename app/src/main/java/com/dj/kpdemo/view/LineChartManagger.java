@@ -140,7 +140,7 @@ public class LineChartManagger {
 //        lineData.setDrawValues(false);
 //        mLineChart.setData(lineData);
 //        mLineChart.invalidate(); // refresh
-        setDrawValues(false);
+        setDrawValues(true);
     }
 
     //刷新
@@ -157,6 +157,7 @@ public class LineChartManagger {
             lineData = new LineData(lineDataSet);
         }
         lineData.setDrawValues(b);
+        lineData.setValueTextColor(Color.WHITE);
         mLineChart.setData(lineData);
         mLineChart.invalidate(); // refresh
     }
