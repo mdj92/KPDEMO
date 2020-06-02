@@ -6,31 +6,28 @@ package com.dj.kpdemo.bean;
  * @Date 2020-05-30
  */
 public class UserCostBean {
-    private int rank;
-    private String name;
-    private String money;
 
-    public int getRank() {
-        return rank;
+    /**
+     * userId : 00938
+     * amount : 60
+     */
+
+    private String userId;
+    private int amount;
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getMoney() {
-        return money;
-    }
-
-    public void setMoney(String money) {
-        this.money = money;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

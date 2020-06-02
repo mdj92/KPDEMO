@@ -7,6 +7,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
 
+import com.dj.kpdemo.bean.MainInfoBean;
 import com.dj.kpdemo.bean.UserInfoBean;
 
 import java.io.BufferedReader;
@@ -62,6 +63,21 @@ public class SpUtil {
         SharedPreferences edit = mContext.getSharedPreferences(USER, Context.MODE_PRIVATE);
         String bean = edit.getString("tokens", "");
         return bean;
+    }
+
+
+
+    /**
+     * 保存首页信息
+     */
+    public void setgetMainInfo(String userInfo) {
+        SharedPreferences.Editor edit = mContext.getSharedPreferences(USER, Context.MODE_PRIVATE).edit();
+        edit.putString("maininfo", userInfo).apply();
+    }
+
+    public MainInfoBean getMainInfo() {
+        SharedPreferences edit = mContext.getSharedPreferences(USER, Context.MODE_PRIVATE);
+        return  ParseJsonUtil.getBean(edit.getString("maininfo", ""),MainInfoBean.class);
     }
 
 

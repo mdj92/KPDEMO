@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".activity.MainActivity"
     android:background="@color/color_1c2134">
     <RelativeLayout
         android:id="@+id/rlayout"
@@ -76,12 +76,12 @@
                     android:textColor="@color/white" />
                 <TextView
                     android:id="@+id/todayMoney"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="1350 元"
                     android:textSize="@dimen/dp20"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="@dimen/dp70"/>
+                    android:layout_marginLeft="@dimen/dp40"/>
             </LinearLayout>
 
             <LinearLayout

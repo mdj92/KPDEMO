@@ -1,4 +1,4 @@
-package com.dj.kpdemo;
+package com.dj.kpdemo.activity;
 
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
@@ -28,12 +28,18 @@ import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.blankj.utilcode.util.TimeUtils;
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.dj.kpdemo.R;
 import com.dj.kpdemo.base.BaseActivity;
+import com.dj.kpdemo.bean.MainInfoBean;
 import com.dj.kpdemo.bean.SalesCPBean;
 import com.dj.kpdemo.bean.TimeBean;
 import com.dj.kpdemo.bean.UserCostBean;
+import com.dj.kpdemo.bean.UserInfoBean;
+import com.dj.kpdemo.util.Base64Utils;
+import com.dj.kpdemo.util.MGlideEngine;
 import com.dj.kpdemo.view.LineChartManagger;
 import com.dj.kpdemo.view.PieChartEntity;
 import com.dj.kpdemo.view.RecyclerViewDivider;
@@ -42,6 +48,8 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,11 +59,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import krt.wid.http.MCallBack;
+import krt.wid.util.ParseJsonUtil;
 
 import static com.dj.kpdemo.util.SpUtil.getTime;
 
 public class MainActivity extends BaseActivity {
-
 
     @BindView(R.id.layout1)
     LinearLayout layout1;
@@ -108,15 +117,13 @@ public class MainActivity extends BaseActivity {
     public void initView() {
         dTimeTV.setText(spUtil.getDateString());
         uRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        userCostAdapter = new UserCostAdapter(getCostData());
-        uRecyclerView.setAdapter(userCostAdapter);
+
 
         cRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        salesAdapter = new SalesAdapter(getSalesData());
-        cRecyclerView.setAdapter(salesAdapter);
 
-        setPieChart(getPieData());
-        setLineChartData();
+        getToken();
+//        setPieChart(getPieData());
+//        setLineChartData();
     }
 
     @OnClick({R.id.layout1,R.id.layout2})
@@ -137,6 +144,62 @@ public class MainActivity extends BaseActivity {
 //                initDialog(getTimeData(),1);
 //                break;
         }
+    }
+    //获取token
+    private void getToken(){
+        String headers="";
+        headers="Basic " + Base64Utils.encodeToString("test_ysw:test_ysw!@#");
+        OkGo.<String>post("https://dish.91yx.vip/oauth/token?grant_type=client_credentials")
+                .headers("Authorization",headers)
+                .execute(new MCallBack<String>(this) {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        String data= response.body().toString();
+                        if (data != null){
+                            UserInfoBean bean= ParseJsonUtil.getBean(data,UserInfoBean.class);
+                            spUtil.setAccessToken(bean.getAccess_token());
+                            spUtil.setUserInfo(data);
+                            getData(bean.getAccess_token());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                    }
+                });
+    }
+
+    //接口数据
+    private void getData(String token){
+//        String token="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0X3lzdyIsImF1dGgiOiJST0xFX0FQUERJU0giLCJleHAiOjE1OTM2OTY1ODd9.0Eoilgp7Y7KA-Evv6WkfY9BrGSqWQ1gNm4mKtwvtrh_FCRU_1KaSorg8iKDykswU2jby3n9vH6HejDorXAwNuw";
+        OkGo.<String>get("https://dish.91yx.vip/dish/api/analysis")
+                .headers("Authorization","Bearer "+token)
+                .params("rangeType","week")
+                .params("fromDate","2020-05-27")
+                .params("toDate","2020-06-03")
+                .execute(new MCallBack<String>(this) {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        String data= response.body().toString();
+                        if (data != null){
+                            MainInfoBean bean = ParseJsonUtil.getBean(data,MainInfoBean.class);
+                            spUtil.setgetMainInfo(data);
+                            todayMoney.setText(bean.getData().getAmount()+"元");
+                            todayOrder.setText(bean.getData().getOrderCount()+"单");
+                            //饼图
+                            getPieData(bean.getData().getCountOfPayByCard(),bean.getData().getCountOfPayByMobile());
+                            //折线图
+                            if (bean.getData().getSalesInfo().size() >0 ){
+                                getLineChartData(bean.getData().getSalesInfo());
+                            }
+
+                            getCostData(bean.getData().getUserConsumptionRanking());
+                            getSalesData(bean.getData().getDishSalesRanking());
+
+                        }
+                    }
+                });
     }
 
     @Override
@@ -163,20 +226,9 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void initLineChart() {
-        ArrayList<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            float x = (float) (i);
-            float y = 0;
-            entries.add(new Entry(i, y));
-        }
-//        LineChartManagger lineChartManagger = new LineChartManagger(mLineChart, entries, this, Arrays.asList(months));
-//        lineChartManagger.setXLabelRotationAngle(-80f);
-    }
 
     private List<TimeBean> getTimeData(){
         List<TimeBean> timeBeanList =new ArrayList<>();
-
         for (int i = 0; i < 3 ; i++) {
             TimeBean bean =new TimeBean();
             bean.setType(i);
@@ -192,23 +244,21 @@ public class MainActivity extends BaseActivity {
         return  timeBeanList;
     }
 
-    private ArrayList<PieEntry> getPieData() {
+    private void getPieData(float ydMoney,float xjMoney) {
         ArrayList<PieEntry> pData = new ArrayList<>();
-        pData.add(new PieEntry(40, "支出"));
-        pData.add(new PieEntry(60, "收入"));
-        return pData;
+        pData.add(new PieEntry(ydMoney, "刷卡支付"));
+        pData.add(new PieEntry(xjMoney, "移动支付"));
+        setPieChart(pData);
     }
 
-    private void setLineChartData() {
-
+    private void getLineChartData(List<MainInfoBean.DataBean.SalesInfoBean> dataList) {
         List<String> mlist = new ArrayList<>();
-
         ArrayList<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < dataList.size(); i++) {
             float x = (float) (i);
             float y = (float) (100 * i);
-            entries.add(new Entry(i, y));
-            mlist.add("02/"+(17 + i));
+            entries.add(new Entry(i, (float) dataList.get(i).getAmount()));
+            mlist.add(dataList.get(i).getDay());
         }
         LineChartManagger lineChartManagger = new LineChartManagger(mLineChart, entries, this, mlist);
         lineChartManagger.setXLabelRotationAngle(0);
@@ -216,24 +266,15 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private List<UserCostBean> getCostData() {
-        for (int i = 0; i < 5; i++) {
-            UserCostBean bean = new UserCostBean();
-            bean.setMoney(100 + i + "");
-            bean.setName("张三" + i);
-            uData.add(bean);
-        }
-        return uData;
+    private void getCostData(List<MainInfoBean.DataBean.UserConsumptionRankingBean> data) {
+        userCostAdapter = new UserCostAdapter(data);
+        uRecyclerView.setAdapter(userCostAdapter);
     }
 
 
-    private List<SalesCPBean> getSalesData() {
-        for (int i = 0; i < 3; i++) {
-            SalesCPBean bean = new SalesCPBean();
-            bean.setNum(100 + i + "");
-            cData.add(bean);
-        }
-        return cData;
+    private void getSalesData(List<MainInfoBean.DataBean.DishSalesRankingBean> data) {
+        salesAdapter = new SalesAdapter(data);
+        cRecyclerView.setAdapter(salesAdapter);
     }
 
 
@@ -336,42 +377,46 @@ public class MainActivity extends BaseActivity {
 
 
     //用户消费排行
-    private class UserCostAdapter extends BaseQuickAdapter<UserCostBean, BaseViewHolder> {
+    private class UserCostAdapter extends BaseQuickAdapter<MainInfoBean.DataBean.UserConsumptionRankingBean, BaseViewHolder> {
 
-        public UserCostAdapter(@Nullable List<UserCostBean> data) {
+        public UserCostAdapter(@Nullable List<MainInfoBean.DataBean.UserConsumptionRankingBean> data) {
             super(R.layout.item_usercost, data);
         }
 
         @Override
-        protected void convert(BaseViewHolder helper, UserCostBean item) {
+        protected void convert(BaseViewHolder helper, MainInfoBean.DataBean.UserConsumptionRankingBean item) {
             if (helper.getAdapterPosition() == 0 || helper.getAdapterPosition() == 1 || helper.getAdapterPosition() == 2) {
                 helper.getView(R.id.position).setVisibility(View.VISIBLE);
                 helper.setText(R.id.position, helper.getAdapterPosition() + 1 + "");
             } else {
                 helper.getView(R.id.position).setVisibility(View.INVISIBLE);
             }
-            helper.setText(R.id.userName, item.getName())
-                    .setText(R.id.money, item.getMoney() + "元");
+            helper.setText(R.id.userName, item.getUserId())
+                    .setText(R.id.money, item.getAmount() + "元");
         }
     }
 
 
     //菜品销量排行
-    private class SalesAdapter extends BaseQuickAdapter<SalesCPBean, BaseViewHolder> {
+    private class SalesAdapter extends BaseQuickAdapter<MainInfoBean.DataBean.DishSalesRankingBean, BaseViewHolder> {
 
-        public SalesAdapter(@Nullable List<SalesCPBean> data) {
+        public SalesAdapter(@Nullable List<MainInfoBean.DataBean.DishSalesRankingBean> data) {
             super(R.layout.item_salescp, data);
         }
 
         @Override
-        protected void convert(BaseViewHolder helper, SalesCPBean item) {
+        protected void convert(BaseViewHolder helper, MainInfoBean.DataBean.DishSalesRankingBean item) {
             if (helper.getAdapterPosition() == 0 || helper.getAdapterPosition() == 1 || helper.getAdapterPosition() == 2) {
                 helper.getView(R.id.position).setVisibility(View.VISIBLE);
                 helper.setText(R.id.position, helper.getAdapterPosition() + 1 + "");
             } else {
                 helper.getView(R.id.position).setVisibility(View.INVISIBLE);
             }
-            helper.setText(R.id.num, item.getNum() + "单");
+            helper.setText(R.id.num, item.getCount() + "单")
+                    .setText(R.id.name, item.getName());
+            ImageView img =(ImageView) helper.getView(R.id.img);
+//           Glide.with(mContext).load(item.getImage()).into(img);
+
         }
     }
 

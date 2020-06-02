@@ -38,6 +38,13 @@ public class MGlideEngine implements ImageEngine {
                 .into(imageView);
     }
 
+    public void loadImage2(Context context, ImageView imageView, Uri uri) {
+//        RequestOptions options = new RequestOptions().override(i, i1).priority(Priority.HIGH);
+        Glide.with(context)
+                .load(uri)
+                .into(imageView);
+    }
+
     @Override
     public void loadImage(Context context, int i, int i1, ImageView imageView, Uri uri) {
         RequestOptions options = new RequestOptions().override(i, i1).priority(Priority.HIGH);
