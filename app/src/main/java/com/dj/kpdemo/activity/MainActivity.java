@@ -40,6 +40,7 @@ import com.dj.kpdemo.bean.UserCostBean;
 import com.dj.kpdemo.bean.UserInfoBean;
 import com.dj.kpdemo.util.Base64Utils;
 import com.dj.kpdemo.util.MGlideEngine;
+import com.dj.kpdemo.util.MTimeUtils;
 import com.dj.kpdemo.view.LineChartManagger;
 import com.dj.kpdemo.view.PieChartEntity;
 import com.dj.kpdemo.view.RecyclerViewDivider;
@@ -101,12 +102,15 @@ public class MainActivity extends BaseActivity {
 
     private UserCostAdapter userCostAdapter; //用户消费
     private SalesAdapter salesAdapter; //菜品消费
-    List<UserCostBean> uData = new ArrayList<>();
-    List<SalesCPBean> cData = new ArrayList<>();
+//    List<UserCostBean> uData = new ArrayList<>();
+////    List<SalesCPBean> cData = new ArrayList<>();
 
     private String dateTime=""; //选择的日期
     private int tType=0; //用于判断点击哪个三角
-    private int dateType =0; //选择时间 日 周 月 类型 -默认日
+    private int dateType =0; //选择时间 日 周 月 年类型 -默认日
+    private MTimeUtils mTimeUtils;
+    private String sTime; //起始时间
+    private String eTime;//结束时间
 
     @Override
     public int bindLayout() {
@@ -115,10 +119,12 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        dTimeTV.setText(spUtil.getDateString());
+        mTimeUtils =new MTimeUtils();
+        sTime = mTimeUtils.getDate(new Date());
+        eTime = mTimeUtils.getFetureDate(new Date(),1);
+        dTimeTV.setText(sTime);
+
         uRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
         cRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         getToken();
@@ -229,7 +235,7 @@ public class MainActivity extends BaseActivity {
 
     private List<TimeBean> getTimeData(){
         List<TimeBean> timeBeanList =new ArrayList<>();
-        for (int i = 0; i < 3 ; i++) {
+        for (int i = 0; i < 4 ; i++) {
             TimeBean bean =new TimeBean();
             bean.setType(i);
             if (i==0){
@@ -238,6 +244,8 @@ public class MainActivity extends BaseActivity {
                 bean.setName("按周统计");
             }else if (i==2){
                 bean.setName("按月统计");
+            }else if (i==3){
+                bean.setName("按年统计");
             }
             timeBeanList.add(bean);
         }
@@ -286,13 +294,28 @@ public class MainActivity extends BaseActivity {
                 dTimeTV.setText(dateTime);
                 //日 周 月
                 if (dateType == 0){
-
+                    sTime = dateTime;
+                    eTime =mTimeUtils.getFetureDate(date,1); //后一天
                 }else if (dateType == 1){
-                   showToast("当前是当月第"+ spUtil.getWeek(date)+ "周");
+                    sTime = mTimeUtils.getWeekfirstday(date);
+                    eTime = mTimeUtils.getWeeklastday(date);
+                    Log.w("MDateTime","周起始:"+ sTime+"  结束："+ eTime);
                 }else if (dateType == 2){
-                    showToast("当前月份："+ spUtil.getMonth(date));
+                    sTime = mTimeUtils.getMonthFirstDate(date);
+                    eTime = mTimeUtils.getMonthLastDate(date);
+                    Log.w("MDateTime","月起始:"+ sTime+"  结束："+ eTime);
+//                    showToast("当前月份："+ spUtil.getMonth(date));
+                }else if (dateType == 3){
+                    sTime = mTimeUtils.getYearFirstDate(date);
+                    eTime = mTimeUtils.getYearLastDate(date);
+                    Log.w("MDateTime","年起始:"+ sTime+"  结束："+ eTime);
+//                    showToast("当前月份："+ spUtil.getMonth(date));
                 }
-//                initData();
+                if (spUtil.getAccessToken() == null){
+                    getToken();
+                }else {
+                    getData(spUtil.getAccessToken());
+                }
             }
         })
                 .setType(new boolean[]{true, true, true, false, false, false})

@@ -13,15 +13,16 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:id="@+id/tlayout"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp250"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
                     android:id="@+id/layout1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:padding="@dimen/dp10">
@@ -42,7 +43,8 @@
 
                 <LinearLayout
                     android:id="@+id/layout2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:padding="@dimen/dp10"
@@ -62,7 +64,7 @@
                         android:layout_marginLeft="@dimen/dp8" />
                 </LinearLayout>
             </LinearLayout>
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -71,20 +73,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="当日收入"
+                    android:text="总收入"
                     android:textSize="@dimen/dp20"
                     android:textColor="@color/white" />
                 <TextView
                     android:id="@+id/todayMoney"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1350 元"
                     android:textSize="@dimen/dp20"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="@dimen/dp40"/>
-            </LinearLayout>
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -93,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="当日订单"
+                    android:text="订单总数"
                     android:textSize="@dimen/dp20"
                     android:textColor="@color/white" />
                 <TextView
@@ -103,8 +105,8 @@
                     android:text="60 单"
                     android:textSize="@dimen/dp20"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="@dimen/dp82"/>
-            </LinearLayout>
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/mPieChart"
